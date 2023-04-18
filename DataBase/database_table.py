@@ -11,6 +11,8 @@ class Users(Base):
     first_name = sq.Column(sq.String(length=40))
     last_name = sq.Column(sq.String(length=40))
 
+    favorites = relationship("Favorites", backref="user", uselist=False)
+
     def __str__(self):
         return f"{self.user_id}, {self.first_name}, {self.last_name}"
 
@@ -22,7 +24,8 @@ class Photos(Base):
     photo_id = sq.Column(sq.Integer)
     count_of_like = sq.Column(sq.Integer)
     user_id = sq.Column(sq.Integer, sq.ForeignKey("users.user_id"), nullable=False)
-    users = relationship(Users, backref="photo")
+
+    users = relationship("Users", backref="photo")
 
     def __str__(self):
         return f"{self.id}, {self.photo_id}, {self.like_count}, {self.user_id}"
@@ -30,6 +33,18 @@ class Photos(Base):
 
 class Favorites(Base):
     __tablename__ = "favorites"
+
+    id = sq.Column(sq.Integer, primary_key=True)
+    first_name = sq.Column(sq.String(length=40))
+    last_name = sq.Column(sq.String(length=40))
+    user_id = sq.Column(sq.Integer, sq.ForeignKey("users.user_id"), nullable=False)
+
+    def __str__(self):
+        return f"{self.user_id}, {self.first_name}, {self.last_name}"
+
+
+class Black(Base):
+    __tablename__ = "black"
 
     user_id = sq.Column(sq.Integer, primary_key=True)
     first_name = sq.Column(sq.String(length=40))

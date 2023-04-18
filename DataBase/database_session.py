@@ -2,10 +2,18 @@ import sqlalchemy
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import func
 
-from DataBase.database_table import create_tables, Users, Photos, Favorites
+import os
+from dotenv import load_dotenv
+
+from DataBase.database_table import create_tables, Users, Photos, Favorites, Black
+
+load_dotenv()
 
 
-DSN = "postgresql://postgres:postgres@localhost:5432/project"
+DSN = (
+    f'postgresql://{os.getenv("LOGIN")}:{os.getenv("PASSWORD")}@'
+    f'{os.getenv("SERVER")}:{os.getenv("PORT")}/{os.getenv("DB_NAME")}'
+)
 engine = sqlalchemy.create_engine(DSN)
 create_tables(engine)
 
@@ -37,5 +45,20 @@ def get_random():
 
 
 def favorites_list():
-    favorite = session.query(Favorites.user_id, Favorites.first_name, Favorites.last_name).all()
+    favorite = session.query(
+        Favorites.user_id, Favorites.first_name, Favorites.last_name
+    ).all()
     return favorite
+
+
+def add_black(user_id, first_name, last_name):
+    session.add(Black(user_id=user_id, first_name=first_name, last_name=last_name))
+    session.commit()
+    session.close()
+
+
+def del_user(user_id):
+    session.query(Favorites).filter(Favorites.user_id == f"{user_id}").delete()
+    session.query(Photos).filter(Photos.user_id == f"{user_id}").delete()
+    session.query(Users).filter(Users.user_id == f"{user_id}").delete()
+    session.commit()
