@@ -156,13 +156,13 @@ def get_love():
                 )
 
             elif request == "Пока":
-                write_msg(vk, event.user_id, "До скорого!")
+                write_msg(vk, event.user_id, f"До скорого, {user_name}!")
                 break
 
             else:
                 write_msg(vk, event.user_id, "Не понял вашего ответа...")
 
-    return "Программа завершила свою работу"
+    return print("Программа завершила работу!")
 
 
 if __name__ == "__main__":
